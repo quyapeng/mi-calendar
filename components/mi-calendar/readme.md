@@ -6,7 +6,13 @@
 
 下载该文件后，放到uni_modules文件下，然后直接页面使用。
 
-<mi-calendar :leaveDateList="[`2022-1-2`,`2022-1-4`]" :suspensionDateList="[`2022-01-05`]" :normalDateList="[`2022-1-3`]"></mi-calendar>
+```
+<mi-calendar 
+   :leaveDateList="[`2022-1-2`,`2022-1-4`]" 
+   :suspensionDateList="[`2022-01-05`]" 
+   :normalDateList="[`2022-1-3`]" 
+   @change="change"/>
+```
 
 ## leaveDateList
 请假日期
