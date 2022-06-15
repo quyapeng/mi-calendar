@@ -1,0 +1,17 @@
+{
+  "id": "mi-calendar",
+  "displayName": "考勤日历",
+  "version": "1.0.0",
+  "description": "考勤日历",
+  "keywords": [
+    "考勤",
+    "日历",
+    "教学"
+  ],
+  "dcloudext": {
+    "category": [
+      "前端组件",
+      "通用组件"
+    ]
+  }
+}
