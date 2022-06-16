@@ -287,9 +287,7 @@ $suspend: #f46864;
     .top-change-month {
       width: 23rpx;
       height: 13rpx;
-      // background: url('../static/arrowDown.png');
-      background: url("https://kinder-care.oss-cn-shanghai.aliyuncs.com/static/arrowDown.png")
-        no-repeat bottom center;
+      background: url("../static/arrowDown.png");
       background-size: 23rpx 13rpx;
       transform: rotate(90deg);
       margin: 0 30rpx;
