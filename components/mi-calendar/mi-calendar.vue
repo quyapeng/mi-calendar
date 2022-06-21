@@ -4,51 +4,27 @@
       <view class="top-bar">
         <i class="top-change-month" @click="changeMonth('prev')" />
         <view class="top-bar-ym">{{ y }}.{{ m }}</view>
-        <i class="top-change-month next-month" @click="changeMonth('next')" />
+        <i v-show="m == new Date().getMonth() + 1" :style="{ opacity: '0.3' }" class="top-change-month next-month" />
+        <i v-show="m != new Date().getMonth() + 1" class="top-change-month next-month" @click="changeMonth('next')" />
       </view>
       <view class="week">
-        <view class="week-day" v-for="(item, index) in weekDay" :key="index">{{
-          item
-        }}</view>
+        <view class="week-day" v-for="(item, index) in weekDay" :key="index">{{ item }}</view>
       </view>
-      <view
-        :class="{ hide: !monthOpen }"
-        class="content"
-        :style="{ height: height }"
-      >
+      <view :class="{ hide: !monthOpen }" class="content" :style="{ height: height }">
         <view :style="{ top: positionTop + 'rpx' }" class="days">
-          <view
-            :class="['item', { nolm: !item.lm }]"
-            v-for="(item, index) in dates"
-            :key="index"
-          >
+          <view :class="['item', { nolm: !item.lm }]" v-for="(item, index) in dates" :key="index">
             <view
               class="day"
               :key="`${item.year}-${item.month + 1}-${item.date}`"
               @click="selectOne(item, $event)"
-              :class="{
-                choose: choose == `${item.year}-${item.month}-${item.date}`,
-              }"
+              :class="{ choose: choose == `${item.year}-${item.month}-${item.date}` }"
             >
               {{ item.date }}
             </view>
-            <view
-              class="flag_icon late"
-              v-if="filterType('LEAVE', item.year, item.month, item.date)"
-            ></view>
-            <view
-              class="flag_icon truancy"
-              v-if="filterType('SUSPENSION', item.year, item.month, item.date)"
-            ></view>
-            <view
-              class="flag_icon normal"
-              v-if="filterType('NORMAL', item.year, item.month, item.date)"
-            ></view>
-            <view
-              class="today-text"
-              v-if="isToday(item.year, item.month, item.date)"
-              >今</view
-            >
+            <view class="flag_icon late" v-if="filterType('LEAVE', item.year, item.month, item.date)"></view>
+            <view class="flag_icon truancy" v-if="filterType('SUSPENSION', item.year, item.month, item.date)"></view>
+            <view class="flag_icon normal" v-if="filterType('NORMAL', item.year, item.month, item.date)"></view>
+            <!-- <view class="today-text" v-if="isToday(item.year, item.month, item.date)">{{ text.today }}</view> -->
           </view>
         </view>
       </view>
@@ -63,50 +39,50 @@
 
 <script>
 export default {
-  name: "mi-calendar",
+  name: 'mi-calendar',
   props: {
     // 第一列星期几
     weekstart: {
       type: Number,
-      default: 1,
+      default: 1
     },
     // 请假日期
     leaveDateList: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     // 停课日期
     suspensionDateList: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     // 正常考勤日期
     normalDateList: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     // 是否展开 暂未实现
     open: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   data() {
     return {
-      statusText: ["出勤", "请假", "停课"],
+      statusText: ['出勤', '请假', '停课'],
       text: {
-        year: "年",
-        month: "月",
-        week: ["一", "二", "三", "四", "五", "六", "日"],
-        today: "今",
+        year: '年',
+        month: '月',
+        week: ['一', '二', '三', '四', '五', '六', '日'],
+        today: '今'
       },
       y: new Date().getFullYear(), // 年
-      // m: new Date().getMonth() >= 10 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`, // 月
+      m: new Date().getMonth() >= 10 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`, // 月
       m: new Date().getMonth() + 1,
       dates: [], // 当前月日期集合
       positionTop: 0,
       monthOpen: true,
-      choose: "",
+      choose: ''
     };
   },
   created() {
@@ -119,21 +95,16 @@ export default {
     const y = date.getFullYear();
     const m = date.getMonth() + 1;
     const d = date.getDate();
-    // const M = m >= 10 ? m + 1 : `0${m + 1}`;
-    // const D = d >= 10 ? d : `0${d}`;
     this.choose = `${y}-${m}-${d}`;
-    console.log("this.dates", this.choose);
   },
   computed: {
     // 顶部星期栏目
     weekDay() {
-      return this.text.week
-        .slice(this.weekstart - 1)
-        .concat(this.text.week.slice(0, this.weekstart - 1));
+      return this.text.week.slice(this.weekstart - 1).concat(this.text.week.slice(0, this.weekstart - 1));
     },
     height() {
-      return (this.dates.length / 7) * 80 + "rpx";
-    },
+      return (this.dates.length / 7) * 80 + 'rpx';
+    }
   },
   methods: {
     // 获取当前月份天数
@@ -160,7 +131,7 @@ export default {
           date,
           day: weekstart + i - 1 || 7,
           month: m - 1 >= 0 ? m - 1 : 12,
-          year: m - 1 >= 0 ? y : y - 1,
+          year: m - 1 >= 0 ? y : y - 1
         });
       }
       for (let j = 1; j <= lastDateOfMonth; j++) {
@@ -169,7 +140,7 @@ export default {
           day: (j % 7) + firstDayOfMonth - 1 || 7,
           month: m,
           year: y,
-          lm: true,
+          lm: true
         });
       }
       for (let k = 1; k <= endDay; k++) {
@@ -177,7 +148,7 @@ export default {
           date: k,
           day: (lastDateOfMonth + startDay + weekstart + k - 1) % 7 || 7,
           month: m + 1 <= 11 ? m + 1 : 0,
-          year: m + 1 <= 11 ? y : y + 1,
+          year: m + 1 <= 11 ? y : y + 1
         });
       }
       return dates;
@@ -187,9 +158,9 @@ export default {
     },
     filterType(type, y, m, d) {
       const opt = {
-        LEAVE: "leaveDateList", // 请假
-        SUSPENSION: "suspensionDateList", // 停课
-        NORMAL: "normalDateList", // 出勤
+        LEAVE: 'leaveDateList', // 请假
+        SUSPENSION: 'suspensionDateList', // 停课
+        NORMAL: 'normalDateList' // 出勤
       };
       const list = opt[type];
       const dataList = this[list];
@@ -207,9 +178,7 @@ export default {
     },
     isToday(y, m, d) {
       let date = new Date();
-      return (
-        y == date.getFullYear() && m == date.getMonth() && d == date.getDate()
-      );
+      return y == date.getFullYear() && m == date.getMonth() + 1 && d == date.getDate();
     },
     // 切换成周模式
     trgWeek() {
@@ -226,19 +195,17 @@ export default {
     },
     // 点击回调
     selectOne({ year, month, date }, event) {
-      let date_time = `${year}-${this.getFormatString(
-        month
-      )}-${this.getFormatString(date)}`;
+      let date_time = `${year}-${this.getFormatString(month)}-${this.getFormatString(date)}`;
       if (month != this.m) {
-        console.log("不在可选范围内");
+        console.log('不在可选范围内');
         return false;
       }
       this.choose = `${year}-${month}-${date}`;
-      this.$emit("change", date_time);
+      this.$emit('change', date_time);
     },
     // 月份切换
     changeMonth(action) {
-      if (action === "next") {
+      if (action === 'next') {
         if (this.m == 12) {
           this.m = 1;
           this.y++;
@@ -254,8 +221,9 @@ export default {
         }
       }
       this.dates = this.monthDay(this.y, this.m);
-    },
-  },
+      this.$emit(`changeMonth`, this.y, this.m);
+    }
+  }
 };
 </script>
 
@@ -282,12 +250,13 @@ $suspend: #f46864;
     .top-bar-ym {
       font-size: 32rpx;
       height: 80rpx;
+      width: 120rpx;
       line-height: 80rpx;
     }
     .top-change-month {
       width: 23rpx;
       height: 13rpx;
-      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAaCAYAAADIUm6MAAAAAXNSR0IArs4c6QAAA95JREFUWEfN1ktsG0UYB/D/Z+9sQlWgvCVOHDhEtpeGRogDr0OqtLQU75YaRIsgBwpUIEBFaSsVqkKpeBQQiPdLBESLwDTeJS0vNQdAFQIpEGltKwcOnJBKBLRVSeOdtT80Jo2cYI8fcVrmZu1/vu/n2dnZpVQK0XDc2M5M/QDOI+JvOWo85I5N/Yr/wbC7Oy+jYvgSM10P4C8iHjS6wt1kx80nQPzYLCPxb1FEevf7wfiZtN9imV1FlEbAdOksB9MushNiAsCFVYBHiiXqHc4HuTOBd64wE1ziQwAuqdJ/QsH/BrCoBm4CJfS5eTl2OvF2THQjgq8BXFSj7yTZcbEXhPUa2J8g9Lm+HD0deNsSPeAy+vya/Rj7yOnCBWyIEQBLNbCjXMJKLy9/WEh8Miaupgi+BLBE02eMQrmcVGAar/7lMs2E4xHmVUO58PBC4J24cS0THQRwjqb+TxTKvsw4/ijD1bC7sQShUPirNBNPEPFNGT/8pp14xzJuYKYDABZr6v4IQ65wx3BUZWbg6keqB+cGBXGQgGs0BSaZOOn5oXri5z2SlrGcmDzNAQEGDpsdcnV6FMdONZwFL+NjWCxJfA7CdRrVSWJem8mFaj+2PJy4sZKJhgCcpXkQvxMsV6XzOFGZ+Q9cXVzTg0XRKfEZCL0aVcAcWeflCsOtyJPxjjVEpU8BmBr0SLFT3jw8ism5marwGXzBHAJ4hQ5PoNsz2UCtWsPDSZhrGfyRFg36SpwdOOnvcbJa4ZpwFb7xcnSYneZ+Aq/WqEKANrjZ4JNG5HbCvBXgvQCM2nk6UJgK1n3xCwq1Mlr49J43ZcT4GCBbAysC1O9mgw91eDth3gHwIIBo7Ry7ohTels4j0NWqC1eT7+mB+L0g1CqldHgmbPR8+V61jG2JfjDe0aORvrhDbnhrFLLe3WsIXl75FKIyLz6o83nATNjk+fLNysZJS9xLjNfnHr+zcIx9IibvTKdRrIdW1xuGz+DHxbtg3KUpziA86PryFZVx4uJ+JrxcBz0oYvLuRtFNw9WEnUDkZ0u8QYyNWjx4gAjMTM/p0Ex4+0pf3rcTKDWy0qcyTa14RWH1OfwqgE3NNKuSfc3NygcA9XJsbrQKL98t2xIvgPFwcy2n04QXXV9ubgXd0laZi0wmzGcJPNAMnkF7vGywpZk5c7PzWfGZWsmE+SSBtzcCYdBuLxs82khWl2kLvHx6WMYOZnpcCyLe4frhrvmi27JVKhGOZWxjpqeqwZh4m+eHz7QD3Xa4KmgnjEcA2lNxBDLAA242fL5d6AWBl/H/vt6fLjdgbM3k5PvtRKta/wD9BFRsxb0ftAAAAABJRU5ErkJggg==")
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAaCAYAAADIUm6MAAAAAXNSR0IArs4c6QAAA95JREFUWEfN1ktsG0UYB/D/Z+9sQlWgvCVOHDhEtpeGRogDr0OqtLQU75YaRIsgBwpUIEBFaSsVqkKpeBQQiPdLBESLwDTeJS0vNQdAFQIpEGltKwcOnJBKBLRVSeOdtT80Jo2cYI8fcVrmZu1/vu/n2dnZpVQK0XDc2M5M/QDOI+JvOWo85I5N/Yr/wbC7Oy+jYvgSM10P4C8iHjS6wt1kx80nQPzYLCPxb1FEevf7wfiZtN9imV1FlEbAdOksB9MushNiAsCFVYBHiiXqHc4HuTOBd64wE1ziQwAuqdJ/QsH/BrCoBm4CJfS5eTl2OvF2THQjgq8BXFSj7yTZcbEXhPUa2J8g9Lm+HD0deNsSPeAy+vya/Rj7yOnCBWyIEQBLNbCjXMJKLy9/WEh8Miaupgi+BLBE02eMQrmcVGAar/7lMs2E4xHmVUO58PBC4J24cS0THQRwjqb+TxTKvsw4/ijD1bC7sQShUPirNBNPEPFNGT/8pp14xzJuYKYDABZr6v4IQ65wx3BUZWbg6keqB+cGBXGQgGs0BSaZOOn5oXri5z2SlrGcmDzNAQEGDpsdcnV6FMdONZwFL+NjWCxJfA7CdRrVSWJem8mFaj+2PJy4sZKJhgCcpXkQvxMsV6XzOFGZ+Q9cXVzTg0XRKfEZCL0aVcAcWeflCsOtyJPxjjVEpU8BmBr0SLFT3jw8ism5marwGXzBHAJ4hQ5PoNsz2UCtWsPDSZhrGfyRFg36SpwdOOnvcbJa4ZpwFb7xcnSYneZ+Aq/WqEKANrjZ4JNG5HbCvBXgvQCM2nk6UJgK1n3xCwq1Mlr49J43ZcT4GCBbAysC1O9mgw91eDth3gHwIIBo7Ry7ohTels4j0NWqC1eT7+mB+L0g1CqldHgmbPR8+V61jG2JfjDe0aORvrhDbnhrFLLe3WsIXl75FKIyLz6o83nATNjk+fLNysZJS9xLjNfnHr+zcIx9IibvTKdRrIdW1xuGz+DHxbtg3KUpziA86PryFZVx4uJ+JrxcBz0oYvLuRtFNw9WEnUDkZ0u8QYyNWjx4gAjMTM/p0Ex4+0pf3rcTKDWy0qcyTa14RWH1OfwqgE3NNKuSfc3NygcA9XJsbrQKL98t2xIvgPFwcy2n04QXXV9ubgXd0laZi0wmzGcJPNAMnkF7vGywpZk5c7PzWfGZWsmE+SSBtzcCYdBuLxs82khWl2kLvHx6WMYOZnpcCyLe4frhrvmi27JVKhGOZWxjpqeqwZh4m+eHz7QD3Xa4KmgnjEcA2lNxBDLAA242fL5d6AWBl/H/vt6fLjdgbM3k5PvtRKta/wD9BFRsxb0ftAAAAABJRU5ErkJggg==')
         no-repeat bottom center;
       background-size: 23rpx 13rpx;
       transform: rotate(90deg);

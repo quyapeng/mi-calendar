@@ -3,7 +3,7 @@
   "displayName": "考勤日历",
   "version": "1.0.0",
   "description": "考勤日历",
-  "license": "MIT",
+  "repository": "https://github.com/quyapeng/mi-calendar",
   "keywords": [
     "考勤",
     "日历",
