@@ -24,7 +24,7 @@ change(date){
 ```
 
 ## changeMonth 切换月份
-`@change="change"`
+`@changeMonth="changeMonth"`
 ```
 changeMonth(year, month){
     console.log(year, month); // 日期 eg：2022, 6
